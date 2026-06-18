@@ -16,12 +16,12 @@ The Pipeline
 Removing Human Speech from the Audio using Silaro-VAD
 ^^^^^^^^^^^^
 
-.. todo:: Define and apply the preprocessing steps.
+.. todo:: Define and apply the Silaro-VAD human speech detection and removal steps.
 
 Generating Mel-Spectrograms using TouchAudio
 ^^^^^^^^^^^^
 
-.. todo:: Define and apply the preprocessing steps.
+.. todo:: Define and apply the Torchaudio.MelSpectrogram steps.
 
 Validating the Output
 ---------------------
