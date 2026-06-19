@@ -6,4 +6,6 @@
  */
 .wy-nav-content {
     max-width: none;
+    /* Leave a slight margin on the right so content doesn't run to the edge. */
+    margin-right: 3em;
 }
