@@ -15,8 +15,8 @@ Logging Into an Access Point
 
 .. codeauthor:: Daniel Morales <damorales4@wisc.edu>
 .. code:: python
-   # This program prints Hello, world!
 
+   # This program prints Hello, world!
     print('Hello, world!')
 
 
