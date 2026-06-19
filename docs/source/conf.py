@@ -43,6 +43,10 @@ html_theme_options = {
     "collapse_navigation": False,
 }
 
+# Custom CSS — widens the content area (the RTD theme caps it at 800px).
+html_static_path = ["_static"]
+html_css_files = ["css/custom.css"]
+
 # -- Options for EPUB output -------------------------------------------------
 
 epub_show_urls = "footnote"

@@ -1,0 +1,9 @@
+/* Widen the Read the Docs theme content area.
+ *
+ * sphinx_rtd_theme hardcodes `.wy-nav-content { max-width: 800px }`, which
+ * leaves a large empty margin on wide screens. Let the content fill the
+ * available width (the nav sidebar still takes its fixed 300px on the left).
+ */
+.wy-nav-content {
+    max-width: none;
+}
