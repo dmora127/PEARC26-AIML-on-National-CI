@@ -67,6 +67,7 @@ Contents
    part1-jetstream2/index
    part2-anvil/index
    part3-ospool/index
+   part4-orchestrating-across-ci/index
 
 .. toctree::
    :maxdepth: 1
