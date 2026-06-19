@@ -13,10 +13,15 @@ The Pipeline
 .. todo:: Define and apply the preprocessing steps.
 
 
-Removing Human Speech from the Audio using Silaro-VAD
+Detecting Human Speech in the Audio Files using Silaro-VAD
 ^^^^^^^^^^^^
 
-.. todo:: Define and apply the Silaro-VAD human speech detection and removal steps.
+.. todo:: Define and apply the Silaro-VAD human speech detection steps.
+
+Removing Human Speech from the Audio Files using Librosa
+^^^^^^^^^^^^
+
+.. todo:: Define and apply the human speech removal steps.
 
 Generating Mel-Spectrograms using TouchAudio
 ^^^^^^^^^^^^
