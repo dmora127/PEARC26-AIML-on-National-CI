@@ -1,8 +1,8 @@
-Staging Data for Anvil
+Staging Data for Purdue Anvil
 ======================
 
 With preprocessing complete, the last step on Jetstream2 is to move the
-processed dataset to Anvil, where you'll train the model in
+processed dataset to `Purdue's Anvil <https://docs.rcac.purdue.edu/userguides/anvil/>`_, where you'll train the model in
 :doc:`Part 2 <../part2-anvil/index>`. In this section you'll transfer the
 mel-spectrograms, verify that they arrived intact, and shelve your Jetstream2
 instance so it stops consuming your allocation.
@@ -90,9 +90,7 @@ To shelve your Jetstream2 instance, follow these steps:
     :align: center
     :width: 80%
 
-3. Click on the instance to view its details.
-
-4. Click the "Shelve" button to stop the instance and save its state. This
+3. Click the "Shelve" button to stop the instance and save its state. This
    prevents any further charges while keeping your data intact.
 
 .. image:: ../assets/jetstream2/instance-management.png
@@ -100,8 +98,7 @@ To shelve your Jetstream2 instance, follow these steps:
     :align: center
     :width: 80%
 
-5. If you need to access the instance again in the future, you can simply
-   "Unshelve" it from the dashboard, and it will resume from where you left off.
+If you need to access the instance again in the future, you can simply "Unshelve" it from the dashboard, and it will resume from where you left off.
 
 .. warning::
     Shelve your instance whenever you are not actively using it, as leaving it
