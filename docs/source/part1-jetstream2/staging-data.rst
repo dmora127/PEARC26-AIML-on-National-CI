@@ -100,7 +100,7 @@ To shelve your Jetstream2 instance, follow these steps:
 
 If you need to access the instance again in the future, you can simply "Unshelve" it from the dashboard, and it will resume from where you left off.
 
-.. warning::
+.. attention::
     Shelve your instance whenever you are not actively using it, as leaving it
     running can incur unnecessary costs. Always double-check that your data has
     been safely transferred and backed up before shelving or terminating an
