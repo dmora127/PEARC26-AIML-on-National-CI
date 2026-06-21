@@ -11,6 +11,12 @@ Installing Dependencies
 
 .. todo:: Package manager choice and the dependency list.
 
+
+Setting Up SSH Keys
+-----------------------
+
+.. todo:: Setup SSH keys for secure access to the VM and for transferring files between Jetstream2 and other resources.
+
 Launching Jupyter
 -----------------
 
