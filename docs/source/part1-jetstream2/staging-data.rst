@@ -11,7 +11,7 @@ Transfer Options
 ----------------
 
 There are several ways to move data between ACCESS resources — ``scp``,
-``rsync``, `Globus <https://www.globus.org/>`_, or object storage. For this
+``rsync``, `Globus <https://www.globus.org/>`_, or `Pelican <http://pelicanplatform.org/>`_ for Pelican-enabled object storages. For this
 tutorial we use ``rsync``: it resumes interrupted transfers, copies only files
 that have changed, and preserves permissions, which makes it the most reliable
 choice for a large dataset and for any re-runs.
