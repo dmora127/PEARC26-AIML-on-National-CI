@@ -802,10 +802,14 @@ In JupyterLab, open the file browser's menu and choose
 JupyterLab opens the image in a new tab and you'll see the mel-spectrogram for
 that chunk:
 
-.. image:: ../assets/jetstream2/mel-spectrogram-sample.png
+.. figure:: ../assets/jetstream2/mel-spectrogram-sample.png
     :alt: A mel-spectrogram of a bird call, with time on the x-axis and mel-frequency on the y-axis
     :align: center
-    :width: 80%
+    :width: 50%
+
+    A mel-spectrogram for a single 5-second chunk
+    (``trokin/XC400227__chunk0002.png``): time runs left-to-right,
+    mel-frequency bottom-to-top, and brighter colors mark louder energy.
 
 Read it like any spectrogram: time runs left-to-right, mel-frequency bottom-to-top,
 and brighter colors mark louder energy at that frequency and moment. The bright
