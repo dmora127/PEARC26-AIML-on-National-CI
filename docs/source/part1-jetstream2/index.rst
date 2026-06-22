@@ -21,4 +21,5 @@ training in :doc:`Part 2 <../part2-anvil/index>`.
    environment-setup
    data-exploration
    preprocessing
+   generating-mels
    staging-data
