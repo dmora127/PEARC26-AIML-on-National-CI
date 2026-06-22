@@ -47,7 +47,7 @@ rather than many threads per file.
    the output looks right before launching it over the full corpus.
 
 Detecting Human Speech in the Audio Files using Silero-VAD
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------------------------
 
 The first stage finds *where* humans are talking in each recording.
 `Silero-VAD <https://github.com/snakers4/silero-vad>`_ is a lightweight,
@@ -391,7 +391,7 @@ the whole pass.
 |
 
 Removing Human Speech from the Audio Files using Librosa
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------------------------
 
 The second stage uses the CSV from detection to actually clean the audio. For
 each recording it **inverts** the speech spans — everything *not* flagged as
