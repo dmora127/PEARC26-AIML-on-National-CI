@@ -1,26 +1,86 @@
 Building the Preprocessing Pipeline
 ===================================
 
-.. todo::
+The exploration in the previous section showed that the raw BirdCLEF
+recordings aren't ready to train on as-is: many clips are crowd-sourced field
+recordings (think `xeno-canto <https://xeno-canto.org/>`_ and iNaturalist),
+and a sizeable fraction contain the recordist narrating — announcing the
+species, the location, or the date. That human speech is noise for a bird
+classifier, so the goal of this section is to turn the ad-hoc exploration into
+a **repeatable pipeline** that cleans the audio and produces consistent inputs
+for model training on Anvil.
 
-   Turn the exploration into a repeatable preprocessing pipeline: cleaning,
-   transforms/normalization, train/validation/test splits, and serialization
-   in a format ready for training on Anvil.
+The pipeline runs in two stages, each a small command-line tool you run on your
+Jetstream2 instance:
+
+#. **Detect** where human speech occurs in every recording (Silero-VAD).
+#. **Remove** that speech, keeping only the clean bird audio (librosa +
+   soundfile).
+
+The cleaned audio is then ready for feature extraction (mel-spectrograms) and
+transfer to Anvil, which we cover in :doc:`staging-data`.
 
 The Pipeline
 ------------
 
-.. todo:: Define and apply the preprocessing steps.
+Rather than one monolithic script, the pipeline is split into discrete stages
+that each read an artifact and write the next one — a file list, then a CSV of
+speech regions, then the cleaned audio. This design is deliberate:
 
+- **Restartable** — if a stage is interrupted, you re-run it without redoing
+  the work before it. The CSV from the detection stage is the durable handoff
+  to the removal stage.
+- **Re-runnable** — you can re-run detection with a different threshold, or
+  re-run removal in a different output format, without re-crawling the
+  filesystem or recomputing earlier stages.
+- **Shardable** — because each stage works from an explicit file list, the work
+  splits cleanly across many independent jobs. That's exactly the property
+  we'll exploit later when fanning the same kind of work out across the OSPool
+  in :doc:`Part 3 <../part3-ospool/index>`.
 
-Detecting Human Speech in the Audio Files using Silaro-VAD
-^^^^^^^^^^^^
+Each tool takes a ``--workers`` flag so you can use all of the cores on your
+Jetstream2 instance; parallelism comes from processing many files at once
+rather than many threads per file.
 
-.. todo:: Define and apply the Silaro-VAD human speech detection steps.
+.. tip::
+   Start with ``--limit`` (a handful of files) to confirm the command runs and
+   the output looks right before launching it over the full corpus.
+
+Detecting Human Speech in the Audio Files using Silero-VAD
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The first stage finds *where* humans are talking in each recording.
+`Silero-VAD <https://github.com/snakers4/silero-vad>`_ is a lightweight,
+pre-trained voice-activity-detection model: given an audio stream, it returns
+the time spans that contain human speech. We run it over every ``.ogg`` file
+and record those spans — we don't modify any audio yet.
+
+The tool works in two steps so you crawl the directory tree once and can then
+re-run detection as many times as you like:
+
+#. **crawl** walks the dataset and writes the list of ``.ogg`` files (a fast,
+   single-threaded pass over the filesystem).
+#. **vad** runs Silero-VAD across that list — parallelized across files with
+   ``--workers`` — and writes one CSV row per recording.
+
+The example below crawls and runs detection in one shot:
 
 .. code-block:: shell
 
     python3 preprocessing.py vad --input /media/volume/birdclef-2026/train_audio/ -o speech_regions.csv --workers 8
+
+The result is ``speech_regions.csv``, with one row per recording recording its
+duration, the number of speech segments, the total speech seconds and ratio,
+and the detected ``[start, end]`` spans (in seconds). Errors are captured
+per-row rather than aborting the run, so a single unreadable file won't sink
+the whole pass.
+
+.. note::
+   Silero-VAD is trained on human speech, so on dense nature audio it can
+   occasionally fire on non-speech sounds. Treat ``--threshold`` as a knob —
+   higher is stricter — and spot-check a few rows before trusting the run. This
+   is also why detection only *records* speech regions; nothing is removed
+   until the next stage, where you can review the spans first.
 
 .. collapse:: Code: Detect Human Speech with Silero-VAD
 
@@ -48,7 +108,7 @@ Detecting Human Speech in the Audio Files using Silaro-VAD
         Dependencies:
             pip install silero-vad librosa soundfile tqdm    # torch is pulled in by silero-vad
 
-        Usage:wb
+        Usage:
             # 1. find the files (fast, single-threaded crawl)
             python detect_speech.py crawl ./train_audio -o ogg_files.txt
 
@@ -330,13 +390,37 @@ Detecting Human Speech in the Audio Files using Silaro-VAD
 
 
 Removing Human Speech from the Audio Files using Librosa
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. todo:: Define and apply the human speech removal steps.
+The second stage uses the CSV from detection to actually clean the audio. For
+each recording it **inverts** the speech spans — everything *not* flagged as
+speech is the clean bird audio — slices those non-speech spans out, and
+concatenates them into a new file. It optionally also writes the carved-out
+speech to a separate directory, which is handy for spot-checking what the VAD
+caught.
+
+A short total of detected speech (below ``--min-speech-seconds``) is treated as
+a false positive, and the clip is kept whole as clean audio. The ``--only-carved``
+flag goes a step further: for clips that were never touched, it records them in
+the CSV but doesn't rewrite them, since the original ``.ogg`` already *is* the
+clean audio — avoiding needless duplication of most of the corpus.
 
 .. code-block:: shell
 
     python3 ./speech_separator.py  --workers 16 --speech-dir /media/volume/birdclef-working-dir/speech_audio/ --non-speech-dir /media/volume/birdclef-working-dir/non_speech_audio/ --format wav
+
+This writes the cleaned audio and extends the CSV with two columns:
+``non_speech_segments`` (the clean spans) and ``clean_audio_path`` (the file to
+feed downstream). That ``clean_audio_path`` column is the contract with the
+feature-extraction step: it points at the clean audio for every recording,
+whether that's a newly carved file or an untouched original.
+
+.. tip::
+   Audio I/O here uses librosa and soundfile rather than torchaudio, so the
+   stage doesn't depend on torchaudio's ``sox_effects`` (removed in 2.9).
+   ``--format flac`` is lossless and much smaller than ``wav``; timestamps are
+   stored in seconds, so the saved sample rate (``--rate``, default 32 kHz —
+   BirdCLEF's native rate) can change without invalidating the CSV.
 
 .. collapse:: Code: Separate Speech/Non-Speech with Librosa + Soundfile
 
