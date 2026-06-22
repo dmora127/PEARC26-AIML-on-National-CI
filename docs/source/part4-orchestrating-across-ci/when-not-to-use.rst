@@ -1,4 +1,4 @@
-When *Not* to Use Each System
+When Not to Use Each System
 =============================
 
 .. todo::
