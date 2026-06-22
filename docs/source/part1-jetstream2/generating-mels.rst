@@ -659,8 +659,6 @@ The output, ``effnet_b0_training_metadata.csv``, is the file the training job in
 it's the complete, portable hand-off from preprocessing to training — and the
 last thing you'll stage to Anvil.
 
-|
-
 .. collapse:: Code: Create Minimal CSV for EfficientNet-B0 Training
 
     .. code-block:: python
@@ -784,3 +782,39 @@ last thing you'll stage to Anvil.
 
         if __name__ == "__main__":
             main()
+|
+Visualizing and Examining Mel-Spectrograms
+------------------------------------------
+
+Before staging everything to Anvil, it's worth opening a few spectrograms to
+confirm they look the way you'd expect — a clear band of bird-call energy
+against a quiet background, not a wall of noise or an empty frame. Since the
+generator saved a colored ``.png`` next to every ``.npy``, you can inspect them
+right inside JupyterLab without writing any code.
+
+In JupyterLab, open the file browser's menu and choose
+**File → Open from Path...**, then enter the path to a spectrogram, for example:
+
+.. code-block:: text
+
+    /media/volume/birdclef-working-dir/melspecs/trokin/XC400227__chunk0002.png
+
+JupyterLab opens the image in a new tab and you'll see the mel-spectrogram for
+that chunk:
+
+.. image:: ../assets/jetstream2/mel-spectrogram-sample.png
+    :alt: A mel-spectrogram of a bird call, with time on the x-axis and mel-frequency on the y-axis
+    :align: center
+    :width: 80%
+
+Read it like any spectrogram: time runs left-to-right, mel-frequency bottom-to-top,
+and brighter colors mark louder energy at that frequency and moment. The bright
+arcs and harmonics are the bird vocalization the model will learn to recognize.
+Open a handful from different species directories to get a feel for the data —
+and to catch any clips that came out empty or noisy before training on them.
+
+.. tip::
+   The directory name (``trokin`` above) is the primary class label, and the
+   ``__chunkNNNN`` suffix is which 5-second window of the recording it came
+   from. Browse other label folders under
+   ``/media/volume/birdclef-working-dir/melspecs/`` to compare species.
