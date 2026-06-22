@@ -1,23 +1,62 @@
 Generating Mel-Spectrograms of the Soundscape Training Data
-===================================
+===========================================================
 
-.. todo::
+The cleaning pipeline left us with clean bird audio, but a convolutional image
+classifier doesn't train on raw waveforms — it trains on images. This section
+converts each cleaned recording into **mel-spectrograms**: 2-D, image-like
+representations of sound that we can hand to an off-the-shelf vision model. The
+model we target in :doc:`Part 2 <../part2-anvil/index>` is EfficientNet-B0, so
+the spectrograms are sized and saved as the fixed-shape inputs it expects.
 
-   Turn the exploration into a repeatable preprocessing pipeline: cleaning,
-   transforms/normalization, train/validation/test splits, and serialization
-   in a format ready for training on Anvil.
+There are three steps:
 
+#. **Generate** mel-spectrograms from the cleaned audio.
+#. **Merge** the spectrogram metadata back with the original BirdCLEF labels.
+#. **Reduce** that to a minimal train/validation CSV ready for model training.
 
-Generating Mel-Spectrograms using TouchAudio
-^^^^^^^^^^^^
+The spectrograms and the final metadata CSV are the artifacts you'll stage to
+Anvil in :doc:`staging-data`.
 
-.. todo:: Define and apply the Torchaudio.MelSpectrogram steps.
+Generating Mel-Spectrograms using Librosa
+------------------------------------------
+
+A `mel-spectrogram <https://en.wikipedia.org/wiki/Mel_scale>`_ plots frequency
+(on the mel scale, which approximates how humans perceive pitch) against time,
+with color encoding energy. Representing audio this way turns a
+variable-length recording into a fixed-size image, which is exactly what a CNN
+image classifier wants.
+
+Working from the ``clean_audio_path`` column produced in the previous section,
+the script processes each recording as follows:
+
+#. Load the clean audio at a fixed sample rate and (optionally) RMS-normalize it
+   so loudness is consistent across clips.
+#. Slice it into fixed-length windows (``--clip_seconds``, stepped by
+   ``--hop_seconds``), so one recording yields one or more equally sized chunks.
+#. Compute a log-scaled mel-spectrogram per chunk, normalize it to ``[0, 1]``,
+   and resize it to a fixed ``--n_mels`` × ``--target_frames`` grid.
+#. Save each chunk twice — a ``.npy`` array for training and a colored ``.png``
+   (``--png_cmap``) for eyeballing — into a per-label directory.
+
+The command below generates 256 × 256 spectrograms from 5-second clips:
 
 .. code-block:: shell
 
     python3 generate_spectrograms2.py --from_csv speech_regions_with_nonspeech.csv --output_dir /media/volume/birdclef-working-dir/melspecs --workers 16 --sr 32000 --clip_seconds 5 --hop_seconds 5 --n_mels 256 --target_frames 256 --fmin 50 --fmax 14000 --png_cmap magma
 
+Alongside the spectrograms, the script writes ``mel_metadata.csv`` (one row per
+chunk: the source audio, the ``.npy``/``.png`` paths, the inferred label, chunk
+index, and shape) and a ``mel_config.json`` recording the exact settings used —
+so a run is reproducible and self-documenting.
+
+.. note::
+   The script pins BLAS/OpenMP to a single thread per process so that
+   parallelism comes only from ``--workers``; otherwise each worker would spawn
+   its own math threads and oversubscribe the cores. Use ``--workers`` to match
+   your instance's core count.
+
 .. collapse:: Code: Mel Spectrogram Generation Python Script
+
     .. code-block:: python
 
         #!/usr/bin/env python3
@@ -444,18 +483,35 @@ Generating Mel-Spectrograms using TouchAudio
             main()
 
 Generating Companion Metadata CSV
----------------------
+---------------------------------
 
-.. todo:: Sanity-check the processed data before transfer.
+``mel_metadata.csv`` describes the spectrograms we generated, but it doesn't
+carry the ground-truth labels and taxonomy from the original BirdCLEF release.
+The model needs those labels, so the last two steps join the spectrogram
+metadata back to the dataset's ``train.csv`` and then distill the result down to
+the minimal columns training actually consumes.
 
 Merging the Mel Metadata with the Original Train Metadata
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Each spectrogram has to be matched back to the recording it came from. Because
+the cleaning stage renamed files (appending suffixes like ``_non_speech``),
+the merge keys on the original file *stem* — stripping those suffixes — so a
+cleaned chunk like ``1161364/iNat1216197_non_speech.wav`` lines up with the
+``1161364/iNat1216197.ogg`` row in ``train.csv``. The result,
+``train-mel-metadata.csv``, carries the BirdCLEF labels (e.g.
+``primary_label``) attached to every chunk.
 
 .. code-block:: shell
 
-    python3 merge_mel_with_train_metadata.py --input-mel /media/volume/birdclef-working-dir/melspecs/mel_metadata.csv --input-train-metadata /media/volume/birdclef-2026/train.csv --output train-mel-metadata.csv
+    python3 merge_mel_with_train_metadata.py --input-mel /media/volume/birdclef-working-dir/melspecs/mel_metadata.csv --input-train-metadata /media/volume/birdclef-2026/train.csv --output-csv train-mel-metadata.csv
+
+The script reports how many rows matched and unmatched, and prints a few
+example unmatched stems — a quick sanity check that the join keys line up
+before you move on.
 
 .. collapse:: Code: Merge Mel Metadata with Train Metadata
+
     .. code-block:: python
 
         #!/usr/bin/env python3
@@ -514,7 +570,6 @@ Merging the Mel Metadata with the Original Train Metadata
 
             parser.add_argument(
                 "--input-train-metadata",
-                "---input-train-metadata",
                 required=True,
                 help="Path to original train.csv metadata.",
             )
@@ -585,13 +640,27 @@ Merging the Mel Metadata with the Original Train Metadata
             main()
 
 Creating a Minimal CSV for EfficientNet-B0 Training
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The merged CSV has more columns than training needs. This last step keeps just
+the relative spectrogram path and its label, then assigns each row to a train
+or validation split. Crucially, the split is **grouped by source recording**
+(``input_file_stem``) rather than by chunk: because multiple chunks come from
+the same recording, splitting at the chunk level would let near-identical
+chunks land in both sets and leak information. Grouping keeps every chunk from a
+given recording on the same side of the split.
 
 .. code-block:: shell
 
     python3 make_effnet_training_csv.py --input-csv train-mel-metadata.csv --output-csv effnet_b0_training_metadata.csv --valid-size 0.66
 
+The output, ``effnet_b0_training_metadata.csv``, is the file the training job in
+:doc:`Part 2 <../part2-anvil/index>` reads. Together with the spectrogram images
+it's the complete, portable hand-off from preprocessing to training — and the
+last thing you'll stage to Anvil.
+
 .. collapse:: Code: Create Minimal CSV for EfficientNet-B0 Training
+
     .. code-block:: python
 
         #!/usr/bin/env python3
