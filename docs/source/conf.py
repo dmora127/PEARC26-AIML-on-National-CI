@@ -19,6 +19,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx_copybutton",
+    "sphinx_toolbox.collapse"
 ]
 
 # Show .. todo:: notes in the rendered docs while the guide is being authored.
