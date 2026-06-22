@@ -481,7 +481,7 @@ so a run is reproducible and self-documenting.
 
         if __name__ == "__main__":
             main()
-
+|
 Generating Companion Metadata CSV
 ---------------------------------
 
@@ -638,7 +638,7 @@ before you move on.
 
         if __name__ == "__main__":
             main()
-
+|
 Creating a Minimal CSV for EfficientNet-B0 Training
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -658,6 +658,8 @@ The output, ``effnet_b0_training_metadata.csv``, is the file the training job in
 :doc:`Part 2 <../part2-anvil/index>` reads. Together with the spectrogram images
 it's the complete, portable hand-off from preprocessing to training — and the
 last thing you'll stage to Anvil.
+
+|
 
 .. collapse:: Code: Create Minimal CSV for EfficientNet-B0 Training
 
