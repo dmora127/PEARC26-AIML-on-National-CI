@@ -11,6 +11,8 @@ Modules & Environments
 
 .. todo:: ``module load`` choices, conda/venv, or Apptainer containers.
 
+.. todo:: install dependencies: pip install pandas torch torchvision pillow scikit-learn tqdm
+
 Verifying GPU Access
 --------------------
 
