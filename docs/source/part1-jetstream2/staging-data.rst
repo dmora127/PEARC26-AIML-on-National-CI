@@ -36,6 +36,10 @@ correctly before moving on.
     already staged the data for you on Anvil. You can skip this section and
     move on to the next one, where we start training the model.
 
+To transfer the data to Purdue's Anvil, you'll need to have access to your Anvil ACCESS Account and generate an SSH key pair on your Jetstream2 instance if you haven't already. Make sure to add your public SSH key to your Anvil account to enable secure access. You can find instructions for generating SSH keys and adding them to your Anvil account in the Anvil documentation.
+
+Alternatively, you can initiate the transfer from Anvil by using the ``rsync`` command in reverse, pulling the data from Jetstream2 to Anvil. Just make sure to adjust the paths and username accordingly. Jetstream2's public IP address can be found in the instance details on the Jetstream2 dashboard. You'll be prompted for your Jetstream2 password when initiating the transfer from Anvil, which can also be found in the instance details. You may find this method more convenient if you prefer to manage the transfer from Anvil or if you encounter any issues with SSH access from Jetstream2.
+
 Verifying the Transfer
 ----------------------
 
