@@ -50,6 +50,13 @@ already knows how to see. In outline, the script:
    labels, the *train* accuracy/F1 are approximate; the validation numbers are
    the ones to trust.
 
+A minimal run pointed at the Part 1 metadata and your staged spectrograms looks
+like this:
+
+.. code-block:: shell
+
+    python3 train.py --metadata_csv effnet_b0_training_metadata.csv --mel_root /anvil/projects/x-cis260991/melspecs/ --out_dir outputs/ --epochs 5 --batch_size 32 --lr 1e-4 --num_workers 8 --arch efficientnet_b0
+
 .. collapse:: Code: Model Training Script
 
     .. code-block:: python
