@@ -603,3 +603,7 @@ submitted from. By default Slurm folds standard error into that same file; add
 a ``#SBATCH --error=slurm-%j.err`` directive if you'd rather keep errors in a
 separate ``slurm-<job_id>.err``. We pick the logs and checkpoints back up in
 :doc:`monitoring`.
+
+.. note::
+
+    Training the model takes roughly 30–45 minutes. We'll let it run during the break and pick back up on the :doc:`staging-model` page once it finishes.
