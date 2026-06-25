@@ -25,3 +25,6 @@ Tutorial Materials
 .. todo::
 
    Link to the tutorial's code repository, datasets, and slides.
+   - GitHub Repo for Tutorial Codebase:
+   - Slides:
+   - Dataset:
