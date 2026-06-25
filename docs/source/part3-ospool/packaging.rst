@@ -167,7 +167,7 @@ well when thousands of jobs all want the *same* file at once.
 
     transfer_input_files = /home/jane.doe/myPythonScript.py
 
-**The OSDF (Powered by Pelican)** is the alternative, addressed with ``osdf://`` URLs that
+**Using the OSDF (Powered by Pelican)** is the alternative, addressed with ``osdf://`` URLs that
 point at your staging area under ``/ospool/ap40/data/<username>/``. The data
 federation caches objects near the execute nodes, so it's the right choice for:
 
