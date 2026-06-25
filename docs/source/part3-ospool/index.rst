@@ -17,7 +17,7 @@ across the OSPool, distributing the work over many independent HTCondor jobs.
 .. admonition:: Why HTC for inference?
    :class: note
 
-   Batch inference is *embarrassingly parallel* — each input is independent —
+   Batch inference is *massively parallel* — each input is independent —
    which makes it a natural fit for high-throughput computing rather than a
    single large machine.
 

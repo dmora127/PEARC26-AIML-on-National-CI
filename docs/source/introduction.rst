@@ -37,7 +37,7 @@ HPC (Purdue Anvil)
 HTC (OSPool)
 ~~~~~~~~~~~~
 
-.. todo:: Many independent jobs via HTCondor; great for embarrassingly parallel inference.
+.. todo:: Many independent jobs via HTCondor; great for massively parallel inference.
 
 The Example Application
 -----------------------

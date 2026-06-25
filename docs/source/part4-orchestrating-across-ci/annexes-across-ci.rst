@@ -229,7 +229,7 @@ national CI:
      - needs a real GPU for a bounded run
    * - ``infer``
      - OSPool (or a local annex)
-     - embarrassingly parallel, high-throughput
+     - massively parallel, high-throughput
 
 Each node's submit file targets its annex by name; the DAG's edges hand each
 stage's output to the next (spectrograms + metadata → checkpoint → predictions).

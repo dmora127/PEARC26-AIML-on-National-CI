@@ -14,7 +14,7 @@ When Not to Use Cloud (Jetstream2)
 When Not to Use HPC (Anvil)
 ---------------------------
 
-.. todo:: Embarrassingly parallel or bursty work that wastes a scheduled allocation.
+.. todo:: Massively parallel or bursty work that wastes a scheduled allocation.
 
 When Not to Use HTC (OSPool)
 ----------------------------

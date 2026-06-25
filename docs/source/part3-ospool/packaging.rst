@@ -90,7 +90,7 @@ A few things worth noting:
 - ``Bootstrap``/``From`` pick the starting image — a slim Python 3.11 base.
 - The ``%post`` section runs at *build* time and is where software gets
   installed. We pull the CPU-only PyTorch wheels, which keeps the image small;
-  batch inference here is embarrassingly parallel across many ordinary cores, so
+  batch inference here is massively parallel across many ordinary cores, so
   it doesn't need a GPU.
 - ``%environment`` sets variables that take effect every time the container runs.
 

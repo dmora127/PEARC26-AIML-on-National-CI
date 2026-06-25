@@ -36,7 +36,7 @@ That model has a few consequences that shape how we package the inference work:
 - **The work must be divisible into independent pieces.** Our task qualifies
   naturally — classifying one recording never depends on the result of another,
   so the input set can be split into shards and each shard handled by its own
-  job. Problems like this are called *massively parallel* (or *embarrassingly parallel*).
+  job. Problems like this are called *massively parallel* (sometimes poorly refer to as *embarrassingly parallel*).
 - **Each job must be self-contained.** A job can land on almost any machine, so
   it has to carry everything it needs — software *and* data — with it.
 - **Jobs should be modest and resilient.** Because resources are opportunistic, a
