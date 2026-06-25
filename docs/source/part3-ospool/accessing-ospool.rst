@@ -29,6 +29,8 @@ the country, many of them filling in idle time on hardware owned by someone else
 You don't reserve a node and keep it; you submit a list of jobs and the system
 runs each one wherever and whenever a slot frees up.
 
+.. todo:: HTC vs HPC Conceptual Figure
+
 That model has a few consequences that shape how we package the inference work:
 
 - **The work must be divisible into independent pieces.** Our task qualifies
@@ -36,10 +38,7 @@ That model has a few consequences that shape how we package the inference work:
   so the input set can be split into shards and each shard handled by its own
   job. Problems like this are called *massively parallel* (or *embarrassingly parallel*).
 - **Each job must be self-contained.** A job can land on almost any machine, so
-  it has to carry everything it needs — software *and* data — with it. That's why
-  the previous page built a :doc:`container <packaging>` for the environment and
-  planned explicit file transfer for the model and inputs; there is no shared
-  filesystem to fall back on.
+  it has to carry everything it needs — software *and* data — with it.
 - **Jobs should be modest and resilient.** Because resources are opportunistic, a
   job can occasionally be interrupted and rescheduled elsewhere. Many small,
   short jobs ride this out far better than a few enormous ones — if one is
@@ -64,15 +63,15 @@ over SSH:
 
     ssh <username>@ap40.uw.osg-htc.org
 
-Replace ``<username>`` with your OSG username. Access points authenticate with either a
+Replace ``<username>`` with your OSPool username. Access points authenticate with either a
 registered **SSH key** or your institutional Single-Signon login. While the single-signon link can be convinient for new
-users, we recommend generated a key pair and added the public key to your OSG account.
+users, we recommend generated a key pair and added the public key to your OSPool account.
 depending on the access point you may also be prompted for a one-time code from a
 multi-factor authentication app. If you haven't set this up yet, follow the
-`OSG account setup guide <https://portal.osg-htc.org/documentation/overview/account_setup/registration-and-login/>`_.
+`OSPool account setup guide <https://portal.osg-htc.org/documentation/overview/account_setup/registration-and-login/>`_.
 
 .. tip::
-    If you're following along as part of the in-person workshop, your OSG account
+    If you're following along as part of the in-person workshop, your OSPool account
     and SSH access have already been provisioned for you — use the username and
     access point you were given at the start of the session.
 
@@ -80,12 +79,11 @@ A couple of habits to carry in from the start:
 
 - **Submit from your home directory.** ``/home`` on the access point is where
   submit files and small per-job files live. Large or shared inputs — the model
-  checkpoint and the container image you staged in :doc:`packaging` — belong in
+  checkpoint and the container image you will stage in :doc:`packaging` — belong in
   your ``/ospool/ap40/data/<username>/`` area and are pulled in via the OSDF.
 - **Don't run heavy compute on the access point itself.** It's a shared,
   submit-only machine — running the actual inference there (rather than shipping
-  it out as jobs) slows it down for everyone. Quick tests are fine; the real work
-  goes to the pool.
+  it out as jobs) slows it down for everyone.
 
 Once you can log in and see your staged model and container, you're ready to
 write the submit file that turns the inference script into a pool of jobs, which
