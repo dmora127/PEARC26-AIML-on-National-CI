@@ -30,6 +30,8 @@ process below:
 
    .. image:: https://raw.githubusercontent.com/osg-htc/technology/c141ea015b3a9102dba1a96959fefe3400b008a6/docs/img/comanage/comanage-sso.png
       :alt: CILogon Single-Sign On page
+      :width: 80%
+      :align: center
 
    Please use your institution's credentials as this simplifies the
    verification process; **only select the Google or GitHub identity providers
@@ -40,6 +42,8 @@ process below:
 
    .. image:: ../assets/account-setup/start-enrollment.png
       :alt: COManage self-signup form
+      :width: 80%
+      :align: center
 
    **If you already have an OSPool account, the enrollment form will
    automatically redirect you to a separate page to link your OSPool account to
@@ -50,6 +54,8 @@ process below:
 
    .. image:: ../assets/account-setup/duplicate-existing-enrollment.png
       :alt: COManage self-signup form for existing accounts
+      :width: 80%
+      :align: center
 
 #. Enter your name and email address.
    In most cases, your institution will provide defaults for your name and
@@ -69,6 +75,8 @@ process below:
 
    .. image:: ../assets/account-setup/enrollment-fields.png
       :alt: COManage enrollment form
+      :width: 80%
+      :align: center
 
 Verifying Your Email Address
 ----------------------------
@@ -79,12 +87,16 @@ to the following:
 
 .. image:: ../assets/account-setup/email-verify.png
    :alt: COManage verification email
+   :width: 80%
+   :align: center
 
 Follow the link in the email and click the "Accept" button to complete the
 verification:
 
 .. image:: ../assets/account-setup/email-confirm.png
    :alt: COManage email confirmation page
+   :width: 80%
+   :align: center
 
 .. warning::
 
@@ -103,6 +115,8 @@ similar to the following:
 
 .. image:: ../assets/account-setup/email-welcome.png
    :alt: COManage welcome email with account information
+   :width: 80%
+   :align: center
 
 Please keep this email for your records, as it contains your OSPool username
 and other important information. You will need your OSPool username to log in
