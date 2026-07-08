@@ -21,30 +21,25 @@ independent jobs* in the aggregate. The two models differ at every level:
 
 .. list-table::
    :header-rows: 1
-   :widths: 16 21 21
 
    * -
      - HPC (Anvil, Slurm)
      - HTC (OSPool, HTCondor)
    * - Optimized for
-     - Making one large, tightly-coupled computation possible
-     - Completing a large number of independent jobs in the aggregate
+     - One large, tightly-coupled computation
+     - Many independent jobs, completed in the aggregate
    * - The hardware
-     - Tightly coupled nodes of CPUs and GPUs with a fast interconnect and a
-       shared filesystem
-     - A distributed, **opportunistic** pool — ordinary machines contributed
-       by dozens of institutions across the country, many filling in idle
-       time on hardware owned by someone else
+     - Tightly coupled nodes with a fast interconnect and a shared filesystem
+     - A distributed, **opportunistic** pool — machines at dozens of
+       institutions contributing idle time
    * - Getting resources
-     - You reserve nodes, and they're yours for the duration of the run
-     - No reservation — you submit a list of jobs, and the system runs each
-       one wherever and whenever a slot frees up
+     - You reserve nodes; they're yours for the duration of the run
+     - No reservation — each job runs wherever and whenever a slot frees up
    * - The right tool when
-     - The pieces of your computation talk to each other constantly, require
-       highly specialized configurations, or need very large numbers of cores
-       across multiple nodes (using MPI)
-     - The work divides into independent pieces, each with its own smaller,
-       requirements that can run anywhere
+     - Pieces that talk to each other constantly, need specialized
+       configurations, or need many cores across nodes (MPI)
+     - Work that divides into independent pieces, each with its own smaller
+       requirements, that can run anywhere
 
 .. todo:: HTC vs HPC Conceptual Figure
 
