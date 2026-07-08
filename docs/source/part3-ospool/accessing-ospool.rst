@@ -15,19 +15,36 @@ The HTC Mental Model
 --------------------
 
 High-Performance Computing (HPC), like the Slurm cluster on Anvil, is built
-around making a *single* job possible running across various tightly coupled nodes of
-CPUs and GPUs, a fast interconnect, and a shared filesystem, all reserved for you
-for the duration of the run. It's the right tool when the pieces of your
-computation have to talk to each other constantly and require highly specialized configurations
-or very large numbers of cores across multiple nodes (using MPI).
+around making a *single* large job possible; High-Throughput Computing (HTC),
+which the OSPool provides, optimizes for getting through a *large number of
+independent jobs* in the aggregate. The two models differ at every level:
 
-High-Throughput Computing (HTC), which the OSPool provides, optimizes for
-something else: getting through a *large number of independent jobs* in the
-aggregate. Instead of one reserved supercomputer, the OSPool is a distributed,
-**opportunistic** pool — machines contributed by dozens of institutions across
-the country, many of them filling in idle time on hardware owned by someone else.
-You don't reserve a node and keep it; you submit a list of jobs and the system
-runs each one wherever and whenever a slot frees up.
+.. list-table::
+   :header-rows: 1
+   :widths: 16 42 42
+
+   * -
+     - HPC (Anvil, Slurm)
+     - HTC (OSPool, HTCondor)
+   * - Optimized for
+     - Making one large, tightly-coupled computation possible
+     - Completing a large number of independent jobs in the aggregate
+   * - The hardware
+     - Tightly coupled nodes of CPUs and GPUs with a fast interconnect and a
+       shared filesystem
+     - A distributed, **opportunistic** pool — ordinary machines contributed
+       by dozens of institutions across the country, many filling in idle
+       time on hardware owned by someone else
+   * - Getting resources
+     - You reserve nodes, and they're yours for the duration of the run
+     - No reservation — you submit a list of jobs, and the system runs each
+       one wherever and whenever a slot frees up
+   * - The right tool when
+     - The pieces of your computation talk to each other constantly, require
+       highly specialized configurations, or need very large numbers of cores
+       across multiple nodes (using MPI)
+     - The work divides into independent pieces, each with its own smaller,
+       requirements that can run anywhere
 
 .. todo:: HTC vs HPC Conceptual Figure
 
