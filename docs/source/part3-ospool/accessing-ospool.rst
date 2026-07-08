@@ -21,7 +21,7 @@ independent jobs* in the aggregate. The two models differ at every level:
 
 .. list-table::
    :header-rows: 1
-   :widths: 16 42 42
+   :widths: 16 21 21
 
    * -
      - HPC (Anvil, Slurm)
