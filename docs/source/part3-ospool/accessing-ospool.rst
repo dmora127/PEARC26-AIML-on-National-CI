@@ -81,7 +81,7 @@ over SSH:
     ssh <username>@ap40.uw.osg-htc.org
 
 Replace ``<username>`` with your OSPool username. Access points authenticate with either a
-registered **SSH key** or your institutional Single-Signon login. While the single-signon link can be convinient for new
+registered **SSH key** or your institutional Single-Signon login. While the single-signon link can be convenient for new
 users, we recommend generated a key pair and added the public key to your OSPool account.
 depending on the access point you may also be prompted for a one-time code from a
 multi-factor authentication app. If you haven't set this up yet, follow the
