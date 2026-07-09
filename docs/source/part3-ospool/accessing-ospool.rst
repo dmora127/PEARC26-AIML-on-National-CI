@@ -11,7 +11,7 @@ once. This page covers the mindset shift that comes with that — *high-throughp
 rather than *high-performance* computing — and how to get onto an access point to
 start submitting.
 
-The HTC Mental Model
+The HTC Mental Model2
 --------------------
 
 High-Performance Computing (HPC), like the Slurm cluster on Anvil, is built
