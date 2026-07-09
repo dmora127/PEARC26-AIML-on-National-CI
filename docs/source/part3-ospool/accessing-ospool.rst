@@ -41,7 +41,7 @@ independent jobs* in the aggregate. The two models differ at every level:
      - Work that divides into independent pieces, each with its own smaller
        requirements, that can run anywhere
 
-    .. image:: ../assets/ospool/conceptual-htc-hpc.png
+.. image:: ../assets/ospool/conceptual-htc-hpc.png
     :alt: Conceptual diagram contrasting HPC and HTC
     :width: 80%
     :align: center
