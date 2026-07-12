@@ -1,11 +1,10 @@
 Introduction
 ============
 
-.. Motivation::
+.. todo::
 
-   This tutorial provides hands-on experience running AI workflows across three major computational paradigms: cloud computing, high-performance computing (HPC), and high-throughput computing (HTC). As artificial intelligence research continues to grow in scale and complexity, researchers increasingly need to understand how to leverage the strengths of different computing environments to efficiently train models, process data, and execute large-scale workflows. Throughout the workshop, participants will explore the advantages, limitations, and ideal use cases of each paradigm, gaining practical insight into how to select and optimize computational resources for their own research needs.
-   Participants will gain direct experience using representative platforms from each ecosystem: Jetstream2 (cloud), Anvil (HPC), and OSPool (HTC). Together, these systems illustrate a diverse set of computational resources available at no cost to U.S.-based researchers through national cyberinfrastructure programs. By the end of the tutorial, attendees will have a stronger foundation for designing scalable, efficient AI workflows that take advantage of the most appropriate computing resources for each stage of their work.
-
+   Set the stage: motivate why a single AI/ML project benefits from spanning
+   multiple national CI resources rather than running everything in one place.
 
 Learning Objectives
 -------------------
