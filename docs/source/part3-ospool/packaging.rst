@@ -78,6 +78,7 @@ Hub) and lists the build steps in a ``%post`` section. Save the following as
         pip install --no-cache-dir \
             torch torchvision --index-url https://download.pytorch.org/whl/cpu
         pip install --no-cache-dir pandas pillow numpy
+        pip install pip install torch torchvision librosa numpy pandas pillow matplotlib silero-vad
 
     %environment
         export PYTHONUNBUFFERED=1

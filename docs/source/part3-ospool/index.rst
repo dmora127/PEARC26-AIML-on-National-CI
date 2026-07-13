@@ -25,6 +25,7 @@ across the OSPool, distributing the work over many independent HTCondor jobs.
    :maxdepth: 1
 
    accessing-ospool
+   running-inference
    packaging
    submit-file
    scaling-out
