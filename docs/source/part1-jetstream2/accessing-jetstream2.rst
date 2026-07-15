@@ -9,15 +9,16 @@ Accessing Jetstream2
 Logging In
 ----------
 
-1. Navigate to the Jetstream2's Exosphere user portal here: `https://jetstream2.exosphere.app/exosphere/`_
-INSERT SNAPSHOT
-2. Click the "Add Allocation" box. 
-3. On the new page, click the red "Add ACCESS account" button and authenticate with your ACCESS credentials. This will redirect you to login via the institution account you created your ACCESS ID with. 
-4) After authenticating, you will see the option to choose an allocation and should see the following listed: 
-CIS260991 — Training: AI/ML Workflows Across National Cyberinfrastructure
-Select it, and click "Choose"
-5) From the list of availabe regions, select "IU — Indiana University" and click "Choose".  
-**[May need a backup instance!!]**
+(1) Navigate to the Jetstream2's Exosphere user portal here: https://jetstream2.exosphere.app/exosphere/
+
+(2) Click the "Add Allocation" box. 
+
+(3) On the new page, click the red "Add ACCESS account" button and authenticate with your ACCESS credentials. This will redirect you to login via the institution account you created your ACCESS ID with. 
+
+(4) After authenticating, you will see the option to choose an allocation and should see the following listed: "CIS260991 — Training: AI/ML Workflows Across National Cyberinfrastructure." Select it, and click "Choose".
+
+5) From the list of availabe regions, select any of the available institutions and click "Choose".  
+
 
 
 Launching an Instance
@@ -25,13 +26,16 @@ Launching an Instance
 Once you have logged in and successfully accessed the tutorial's resource allocation, you can launch an instance. 
 
 (1) Select the pane showing the course allocation. 
--- At this point, is it possible to view the resources available to our ACCESS allocation on Jestream2. Should you choose to request your own ACCESS allocation, you will have access to this same resource utalization view. It is helpful for understanding how efficently you are using your resources and when you may need to request an additional allocation to avoid an inturruption to your work. 
+
+At this point, is it possible to view the resources available to our ACCESS allocation on Jestream2. Should you choose to request your own ACCESS allocation, you will have access to this same resource utalization view. It is helpful for understanding how efficently you are using your resources and when you may need to request an additional allocation to avoid an inturruption to your work. 
 
 (2) In the upper right corner, click "Create" and select "Instance" from the dropdown menu. 
--- In the Jetstream2 cloud, you have the option of cusotmizing your own instance - this means selecting your own operating system (e.g., Ubuntu, Red Hat), operating system version, and more. This ability to customize aspects of the virtual machine you compute will run on is what makes a cloud environment ideal for testing and exploring new software and datsets. We will explore more of this customization in the next step. 
+
+In the Jetstream2 cloud, you have the option of cusotmizing your own instance - this means selecting your own operating system (e.g., Ubuntu, Red Hat), operating system version, and more. This ability to customize aspects of the virtual machine you compute will run on is what makes a cloud environment ideal for testing and exploring new software and datsets. We will explore more of this customization in the next step. 
 
 (3) From the Ubuntu pane, select 24.04 (latest) to launch your instance. On the new page, explore the options available to your session. For today's workshop, we will use the default options and do not need to change any settings; however, please name your instance.
--- These options include different GPU architectures, CPU and RAM allocations, disk space, and more. You can explore Advanced Options, but for now, do not change these settings.
+
+These options include different GPU architectures, CPU and RAM allocations, disk space, and more. You can explore Advanced Options, but for now, do not change these settings.
 
 (4) Leaving the default values and after you have named your instance, click "Create" to launch your instance. 
 
