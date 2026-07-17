@@ -54,3 +54,8 @@ epub_show_urls = "footnote"
 
 # -- Options for Display output ------------------------------------------------
 show_authors = True
+
+html_theme_options = {
+    # Disable showing the sidebar. Defaults to 'false'
+    'nosidebar': True,
+}
