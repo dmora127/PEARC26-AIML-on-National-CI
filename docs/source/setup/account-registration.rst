@@ -23,7 +23,7 @@ Starting the registration process
 You can start the application for a new account by following the registration
 process below:
 
-#. Visit `the new user enrollment page <https://osg-htc.org/pearc26-ml-enroll>`_.
+#. Visit `the new user enrollment page <http://path-cc.io/pearc26-register>`_.
 
 #. You will be presented with a CILogon Single-Sign On page.
    Select your institution and sign in with your institutional credentials:

@@ -62,10 +62,10 @@ Architecture Overview
 ---------------------
 This tutorial follows a simple AI/ML workflow: data exploration, model training, and inference. For each stage, we will leverage the computing environment best suited to the task—cloud computing (Jetstream2) for interactive exploration, HPC (Anvil) for training, and HTC (OSPool) for large-scale inference. Along the way, we will demonstrate how data, models, and other artifacts can be transferred between systems to build an end-to-end AI workflow.
 
-┌────────────────┐     ┌────────────────┐     ┌────────────────┐
-│  Jetstream2    │ --> │     Anvil      │ --> │    OSPool      │
-│     Cloud      │     │      HPC       │     │      HTC       │
-└────────────────┘     └────────────────┘     └────────────────┘
+    ┌────────────────┐     ┌────────────────┐     ┌────────────────┐
+    │  Jetstream2    │ --> │     Anvil      │ --> │    OSPool      │
+    │     Cloud      │     │      HPC       │     │      HTC       │
+    └────────────────┘     └────────────────┘     └────────────────┘
 
-Data Exploration        Model Training         Large-Scale Inference
-and Preparation         and Fine-Tuning        and Deployment
+    Data Exploration        Model Training         Large-Scale Inference
+    and Preparation         and Fine-Tuning        and Deployment
