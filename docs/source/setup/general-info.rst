@@ -17,10 +17,9 @@ them. The organizers have set up a shared tutorial allocation, and completing
 the single registration below provisions everything you need:
 
 - An **OSPool account** on the ``ap40`` access point, used for the
-  high-throughput inference portion (:doc:`Part 3 <../part3-ospool/index>`).
+  high-throughput inference portion (Part 3).
 - Membership in the tutorial's **ACCESS-CI allocation**, which grants access to
-  Jetstream2 (:doc:`Part 1 <../part1-jetstream2/index>`) and Anvil
-  (:doc:`Part 2 <../part2-anvil/index>`) through your ACCESS-CI ID.
+  Jetstream2 (Part 1) and Anvil (Part 2) through your ACCESS-CI ID.
 
 To setup your account, you will need:
 
@@ -102,8 +101,6 @@ complete.
    username.
 #. ☐ I have a **modern web browser** (Chrome or Firefox recommended).
 #. ☐ *(Optional)* I have an SSH client and can open a terminal.
-#. ☐ I skimmed the :doc:`introduction <../introduction>` for the big picture
-   of the three systems.
 
 If any of the account steps fail, email support@osg-htc.org or contact the
 tutorial organizers — don't wait until the session starts.

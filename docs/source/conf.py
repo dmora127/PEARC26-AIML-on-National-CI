@@ -32,7 +32,19 @@ intersphinx_mapping = {
 intersphinx_disabled_domains = ["std"]
 
 templates_path = ["_templates"]
-exclude_patterns = []
+
+# Preview build: show only the landing page and the setup/ pages. To restore the
+# full guide, clear this list back to [] (and re-add the toctree entries in
+# index.rst plus the :doc: links that were flattened in setup/general-info.rst).
+exclude_patterns = [
+    "introduction.rst",
+    "wrap-up.rst",
+    "resources.rst",
+    "part1-jetstream2/**",
+    "part2-anvil/**",
+    "part3-ospool/**",
+    "part4-orchestrating-across-ci/**",
+]
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -55,7 +67,3 @@ epub_show_urls = "footnote"
 # -- Options for Display output ------------------------------------------------
 show_authors = True
 
-html_theme_options = {
-    # Disable showing the sidebar. Defaults to 'false'
-    'nosidebar': True,
-}
