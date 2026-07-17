@@ -94,7 +94,7 @@ complete.
 #. ☐ I have an active **ACCESS-CI ID** and can sign in at
    https://access-ci.org with my institutional identity.
 #. ☐ I completed the **enrollment form** at the
-   `new user enrollment page <http://path-cc.io/pearc26-registerl>`_
+   `new user enrollment page <http://path-cc.io/pearc26-register>`_
    (or linked my existing OSPool account to my ACCESS-CI ID).
 #. ☐ I **verified my email address** via the link from registry@cilogon.org.
 #. ☐ I received the **account information email** and saved my OSPool
