@@ -35,6 +35,7 @@ resources like Jetstream2 and Anvil and fold it into the pool you submit to.
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
    orchestration-model
    annexes-across-ci

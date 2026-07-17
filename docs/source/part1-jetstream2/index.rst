@@ -16,6 +16,7 @@ training in :doc:`Part 2 <../part2-anvil/index>`.
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
    accessing-jetstream2
    environment-setup

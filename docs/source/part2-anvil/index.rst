@@ -16,6 +16,7 @@ interactive prototyping to GPU-accelerated batch jobs scheduled with Slurm.
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
    accessing-anvil
    environment-setup

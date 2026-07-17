@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "AI/ML Workflows on the National CI"
-copyright = "2026, PEARC26 Tutorial Team"
+copyright = "2026, PEARC26 AI/ML Workflows on the National CI Tutorial Team"
 author = "PEARC26 Tutorial Team"
 
 release = "0.1"

@@ -15,3 +15,11 @@ Exploratory Analysis
 --------------------
 
 .. todo:: Summary stats and visualizations that motivate the preprocessing.
+
+.. todo:: Open up the dataset in a Jupyter notebook and explore it interactively, including:
+
+   - Class balance
+   - Distribution of audio lengths
+   - Spectrogram visualizations
+   - Any data-quality issues
+   - Audio playback of a few examples (to show the polyphonic nature of the soundscapes)

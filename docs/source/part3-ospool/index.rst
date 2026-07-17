@@ -23,6 +23,7 @@ across the OSPool, distributing the work over many independent HTCondor jobs.
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
    accessing-ospool
    running-inference
