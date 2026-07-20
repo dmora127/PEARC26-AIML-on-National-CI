@@ -23,9 +23,8 @@ stage of the machine learning lifecycle:
 
 .. tip::
 
-   Complete :doc:`setup/index` before the hands-on sections — in particular,
-   register for your accounts at least 24 hours ahead so provisioning finishes
-   in time.
+   New to these systems? Start with :doc:`introduction` for the big picture,
+   then complete :doc:`setup/index` before the hands-on sections.
 
 The Workflow at a Glance
 ------------------------
@@ -58,4 +57,23 @@ Contents
    :maxdepth: 2
    :caption: Getting Started
 
+   introduction
    setup/index
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Tutorial
+   :hidden:
+
+   part1-jetstream2/index
+   part2-anvil/index
+   part3-ospool/index
+   part4-orchestrating-across-ci/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Reference
+   :hidden:
+
+   wrap-up
+   resources
