@@ -63,7 +63,6 @@ Contents
 .. toctree::
    :maxdepth: 2
    :caption: Tutorial
-   :hidden:
 
    part1-jetstream2/index
    part2-anvil/index
@@ -73,7 +72,6 @@ Contents
 .. toctree::
    :maxdepth: 1
    :caption: Reference
-   :hidden:
 
    wrap-up
    resources
