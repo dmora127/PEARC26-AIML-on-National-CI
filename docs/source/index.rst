@@ -23,8 +23,7 @@ stage of the machine learning lifecycle:
 
 .. tip::
 
-   New to these systems? Start with :doc:`introduction` for the big picture,
-   then complete :doc:`setup/index` before the hands-on sections.
+   New to these systems? Complete :doc:`setup/index` before the live session.
 
 The Workflow at a Glance
 ------------------------
@@ -57,21 +56,16 @@ Contents
    :maxdepth: 2
    :caption: Getting Started
 
-   introduction
    setup/index
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Tutorial
+.. Tutorial and reference sections are hidden until release. To restore,
+   re-add the toctree entries below and remove the matching entries from
+   exclude_patterns in conf.py.
 
+   introduction
    part1-jetstream2/index
    part2-anvil/index
    part3-ospool/index
    part4-orchestrating-across-ci/index
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Reference
-
    wrap-up
    resources
