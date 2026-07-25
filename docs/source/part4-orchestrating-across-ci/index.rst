@@ -43,5 +43,4 @@ resources like Jetstream2 and Anvil and fold it into the pool you submit to.
    moving-data-and-models
    reproducibility-and-portability
    pitfalls-and-anti-patterns
-   when-not-to-use
    activity-deconstructing-workflows
