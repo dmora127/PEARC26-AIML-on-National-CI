@@ -126,7 +126,17 @@ researchers and educators at U.S.-based institutions. Because it is a pilot,
 the resource catalog and calls evolve; check the portal for what is currently
 on offer rather than planning around a snapshot.
 
-.. TODO: ADD NAIRR Tiers.
+.. tip:: NAIRR offers Startup awards for getting started!
+
+    NAIRR Startup awards are designed to get a project off the ground quickly,
+    with a small amount of GPU time and cloud credits. They are ideal for
+    prototyping a pipeline, testing a new dataset, or exploring a new model.
+    These awards are typically reviewed on a rolling basis, and the application
+    process is streamlined to minimize overhead. Application reviews typically
+    take 1-3 weeks. If your project is in its early stages, a Startup award
+    can provide the resources you need to demonstrate feasibility and gather
+    preliminary results. Learn more about NAIRR Startup awards on
+    the `NAIRR Pilot website <https://nairrpilot.org/>`_.
 
 For the workflow in this tutorial, the natural use of a NAIRR award is the
 ``train`` stage: a NAIRR compute award on a GPU system takes the place of the
