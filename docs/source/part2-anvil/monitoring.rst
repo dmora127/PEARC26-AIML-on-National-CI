@@ -1,10 +1,15 @@
 Monitoring & Checkpointing
 ==========================
 
-.. todo::
-
-   Track the running job, read its logs, and verify that checkpoints/the final
-   model are written correctly.
+Submitting with ``sbatch`` (:doc:`training-job`) hands your job to Slurm — and
+hands away the immediate feedback you had on Jetstream2. There's no console to
+watch and no traceback in front of you when something breaks: a job may sit in
+the queue for minutes or hours before it starts, and once it runs, everything it
+has to say goes to files rather than to your terminal. This page is about
+following a job from queued to finished — finding where it sits in the queue,
+reading its logs while it runs, and confirming that the checkpoint the training
+script writes each time validation macro-F1 improves actually landed on disk
+before you move on to :doc:`staging-model`.
 
 Monitoring the Job
 ------------------
@@ -140,7 +145,4 @@ Two numbers in the output matter here:
     could raise ``--batch_size`` or try a larger ``--arch``; running near the
     ceiling explains any CUDA out-of-memory crashes in the log.
 
-Checkpoints & Outputs
----------------------
 
-.. todo:: Where the model and checkpoints land; how to evaluate the result.
