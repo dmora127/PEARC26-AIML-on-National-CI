@@ -38,9 +38,5 @@ resources like Jetstream2 and Anvil and fold it into the pool you submit to.
    :hidden:
 
    orchestration-model
-   annexes-across-ci
    access-and-nairr-allocations
-   moving-data-and-models
-   reproducibility-and-portability
-   pitfalls-and-anti-patterns
    activity-deconstructing-workflows
