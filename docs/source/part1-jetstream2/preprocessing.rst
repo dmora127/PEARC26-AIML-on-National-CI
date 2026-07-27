@@ -704,3 +704,344 @@ whether that's a newly carved file or an untouched original.
             main()
 
 |
+Detecting Bird Calls in the Cleaned Audio before Feature Extraction
+-------------------------------------------------------------------
+
+Removing the narration left us with clean audio, but *clean* isn't the same as
+*useful*. A field recording is mostly background — wind, rain, insects, traffic,
+and long stretches of nothing — with the actual vocalization occupying a small
+slice of the runtime. If we hand the whole clip to the mel generator and chop it
+into 5-second windows, a large share of those windows contain no bird at all, yet
+every one of them inherits the recording's species label. That's background noise
+trained in as signal.
+
+This stage finds *where* the bird calls are. It has the same shape as the speech
+stage — detect spans, write them to a CSV, decide what to do with them later —
+but it can't reuse Silero-VAD, which is a model trained specifically on human
+speech. Instead it uses **spectral signal detection**, the approach Sprengel and
+Kahl used in their BirdCLEF work, which needs no model at all: it finds calls by
+looking for cells in the spectrogram that stand out from their own neighborhood.
+
+For each recording, the script:
+
+#. Computes a magnitude mel-spectrogram over the **whole** clip and divides it by
+   its peak, so the thresholds below are relative to that recording rather than
+   to an absolute loudness.
+#. Marks a cell as *signal* when it exceeds ``--row_factor`` × the median of its
+   frequency row **and** ``--col_factor`` × the median of its time column.
+#. Cleans up the resulting binary mask: ``--erode`` removes isolated specks and
+   ``--dilate`` fills the small holes erosion leaves behind.
+#. Collapses the mask down the frequency axis — a time frame counts as a call
+   frame if *any* of its cells survived — and turns contiguous runs of call
+   frames into ``[start, end]`` spans in seconds, padded by ``--pad_ms``, merged
+   across gaps shorter than ``--merge_gap_ms``, and finally dropped if they're
+   still shorter than ``--min_call_ms``.
+
+Requiring **both** medians in step 2 is what makes this work on field recordings.
+Wind and rain are broadband and stationary: they're loud across an entire time
+column, so they lift that column's median right along with themselves and never
+clear the ``--col_factor`` bar. A steady electrical hum is the mirror image —
+loud across a whole frequency row, so it never clears ``--row_factor``. A bird
+call is localized in both axes at once, which is exactly the thing that beats
+both medians.
+
+Run the code using the following command:
+
+.. code-block:: shell
+
+     python3 detect_calls.py --input_csv speech_regions_with_nonspeech.csv --output_csv call_regions.csv --workers 16
+
+The result is ``call_regions.csv``, with one row per recording: the clean audio
+path and its duration, the number of detected call segments, the total call
+seconds and the ``call_ratio`` (call seconds ÷ duration), and the ``[start,
+end]`` spans themselves. Two more columns absorb the edge cases instead of
+aborting the run — ``note`` is set to ``too_short`` when speech removal carved
+the clip down below ``--min_audio_seconds``, and ``error`` holds the exception
+for a row whose ``clean_audio_path`` is empty or unreadable.
+
+.. important::
+   Keep ``--sr``, ``--n_fft``, ``--hop_length``, ``--n_mels``, ``--fmin``, and
+   ``--fmax`` identical to what you pass to the mel generator in
+   :doc:`generating-mels`. Span boundaries are computed as
+   ``hop_length / sr`` seconds per frame, so if the two stages disagree the
+   timings won't line up with the chunks they're meant to select.
+
+.. note::
+   ``call_regions.csv`` is a hand-off, not the end of the story. The mel
+   generator shown in :doc:`generating-mels` chunks each clean recording end to
+   end; to use these spans you intersect each chunk window with
+   ``call_segments`` and keep only the windows that overlap a call. The last line
+   of the summary estimates that trade for you — how many 5-second chunks the
+   call audio yields versus the whole clips — so you can see how much training
+   data you're giving up for the purity before committing to it.
+
+.. collapse:: Code: Detect Bird Calls with Spectral Signal Detection
+
+    .. code-block:: python
+
+        #!/usr/bin/env python3
+        """
+        Detect bird-call (signal) regions in each cleaned recording, so mel generation
+        can chunk only the call-bearing audio instead of the whole clip -- the same
+        "detect spans, keep the good ones" pattern the speech stage uses, aimed at bird
+        calls instead of human speech.
+
+        Method (Kahl / Sprengel spectral signal detection): compute a magnitude mel
+        spectrogram over the WHOLE recording, normalize, and mark a cell as signal when
+        it exceeds row_factor x its frequency-row median AND col_factor x its time-column
+        median. Requiring both is what rejects stationary broadband noise (wind, rain):
+        such noise is loud across a whole time column, so it never beats the column
+        median, while a localized call does. Binary erosion+dilation removes specks and
+        fills gaps; contiguous call frames become [start, end] second spans.
+
+        This stage only writes spans + statistics -- it does NOT touch the spectrograms.
+        Tune the thresholds here (cheap), then feed the spans into mel generation once.
+
+            python3 detect_calls.py \
+                --input_csv speech_regions_with_nonspeech.csv \
+                --output_csv call_regions.csv \
+                --workers 14
+
+        Match --sr/--n_fft/--hop_length/--n_mels/--fmin/--fmax to your mel generation so
+        the span timing lines up with the chunks. Dependencies: librosa, scipy, pandas,
+        numpy, tqdm (all already pulled in by the existing pipeline).
+        """
+
+        import argparse
+        import json
+        import os
+        import sys
+        from concurrent.futures import ProcessPoolExecutor, as_completed
+        from pathlib import Path
+
+        import librosa
+        import numpy as np
+        import pandas as pd
+        from scipy.ndimage import binary_dilation, binary_erosion
+
+        CSV_FIELDS = [
+            "relpath",
+            "clean_audio_path",
+            "duration_s",
+            "n_call_segments",
+            "call_seconds",
+            "call_ratio",
+            "call_segments",
+            "note",
+            "error",
+        ]
+
+
+        def runs_to_spans(frame_bool):
+            """Contiguous True runs in a 1-D bool array -> list of [start, end) frame indices."""
+            edges = np.flatnonzero(np.diff(np.r_[0, frame_bool.astype(np.int8), 0]))
+            return list(zip(edges[0::2], edges[1::2]))
+
+
+        def merge_spans(spans, gap_s):
+            """Merge spans separated by <= gap_s seconds. spans: sorted [start, end]."""
+            if not spans:
+                return []
+            merged = [list(spans[0])]
+            for start, end in spans[1:]:
+                if start - merged[-1][1] <= gap_s:
+                    merged[-1][1] = max(merged[-1][1], end)
+                else:
+                    merged.append([start, end])
+            return merged
+
+
+        def detect_call_spans(y, sr, cfg):
+            """Return a list of [start_s, end_s] call spans for a mono waveform."""
+            if y.size == 0 or y.size < cfg["n_fft"]:
+                return []
+
+            spec = librosa.feature.melspectrogram(
+                y=y, sr=sr, n_fft=cfg["n_fft"], hop_length=cfg["hop_length"],
+                n_mels=cfg["n_mels"], fmin=cfg["fmin"], fmax=cfg["fmax"], power=1.0,
+            )
+            peak = spec.max()
+            if not np.isfinite(peak) or peak <= 0:
+                return []
+            spec = spec / peak
+
+            row_med = np.median(spec, axis=1, keepdims=True)   # per frequency bin
+            col_med = np.median(spec, axis=0, keepdims=True)   # per time frame
+            mask = (spec > cfg["row_factor"] * row_med) & (spec > cfg["col_factor"] * col_med)
+
+            if cfg["erode"] > 0:
+                mask = binary_erosion(mask, structure=np.ones((cfg["erode"], cfg["erode"])))
+            if cfg["dilate"] > 0:
+                mask = binary_dilation(mask, structure=np.ones((cfg["dilate"], cfg["dilate"])))
+
+            frame_has_call = mask.any(axis=0)
+            sec_per_frame = cfg["hop_length"] / sr
+            duration_s = len(y) / sr
+
+            spans = []
+            for f0, f1 in runs_to_spans(frame_has_call):
+                start = max(0.0, f0 * sec_per_frame - cfg["pad_s"])
+                end = min(duration_s, f1 * sec_per_frame + cfg["pad_s"])
+                if end > start:
+                    spans.append([start, end])
+
+            spans = merge_spans(spans, cfg["merge_gap_s"])
+            spans = [s for s in spans if (s[1] - s[0]) >= cfg["min_call_s"]]
+            return [[round(a, 3), round(b, 3)] for a, b in spans]
+
+
+        def build_row(rec, cfg):
+            row = {k: "" for k in CSV_FIELDS}
+            row["relpath"] = str(rec.get("relpath", ""))
+            audio_path = rec.get(cfg["audio_col"])
+            row["clean_audio_path"] = str(audio_path) if audio_path else ""
+            try:
+                if not row["clean_audio_path"]:
+                    raise ValueError(f"empty {cfg['audio_col']}")
+                y, _ = librosa.load(row["clean_audio_path"], sr=cfg["sr"], mono=True)
+                y = np.nan_to_num(y)
+                duration_s = round(len(y) / cfg["sr"], 3)
+                row["duration_s"] = duration_s
+
+                # Near-empty clean audio (speech removal can carve out almost the whole
+                # clip) is too short to analyze; mel generation's min_chunk_seconds gate
+                # drops it anyway. Mark it instead of warning, and keep it out of the
+                # zero-call meter used for tuning.
+                if len(y) < cfg["min_audio_samples"]:
+                    row["n_call_segments"] = 0
+                    row["call_seconds"] = 0.0
+                    row["call_ratio"] = 0.0
+                    row["call_segments"] = json.dumps([])
+                    row["note"] = "too_short"
+                    return row
+
+                spans = detect_call_spans(y, cfg["sr"], cfg)
+                call_seconds = round(sum(b - a for a, b in spans), 3)
+                row["n_call_segments"] = len(spans)
+                row["call_seconds"] = call_seconds
+                row["call_ratio"] = round(call_seconds / duration_s, 4) if duration_s else 0.0
+                row["call_segments"] = json.dumps(spans)
+            except Exception as exc:
+                row["error"] = f"{type(exc).__name__}: {exc}"
+                row["call_segments"] = json.dumps([])
+            return row
+
+
+        _CFG = {}
+
+
+        def _init_worker(cfg):
+            _CFG.update(cfg)
+
+
+        def _work(rec):
+            return build_row(rec, _CFG)
+
+
+        def main():
+            ap = argparse.ArgumentParser()
+            ap.add_argument("--input_csv", default="speech_regions_with_nonspeech.csv")
+            ap.add_argument("--output_csv", default="call_regions.csv")
+            ap.add_argument("--audio_col", default="clean_audio_path")
+            ap.add_argument("--workers", type=int, default=1)
+            ap.add_argument("--limit", type=int, default=None,
+                            help="Process only the first N rows (for tuning).")
+            ap.add_argument("--min_audio_seconds", type=float, default=0.5,
+                            help="Mark clean audio shorter than this 'too_short' and skip "
+                                 "detection (also silences the n_fft>signal warning).")
+
+            # Match these to mel generation so spans line up with chunks.
+            ap.add_argument("--sr", type=int, default=32000)
+            ap.add_argument("--n_fft", type=int, default=2048)
+            ap.add_argument("--hop_length", type=int, default=512)
+            ap.add_argument("--n_mels", type=int, default=256)
+            ap.add_argument("--fmin", type=int, default=50)
+            ap.add_argument("--fmax", type=int, default=14000)
+
+            # Detection knobs -- these are what you tune.
+            ap.add_argument("--row_factor", type=float, default=3.0,
+                            help="Cell must exceed this x its frequency-row median.")
+            ap.add_argument("--col_factor", type=float, default=3.0,
+                            help="Cell must exceed this x its time-column median.")
+            ap.add_argument("--erode", type=int, default=4, help="Speck-removal kernel (0=off).")
+            ap.add_argument("--dilate", type=int, default=4, help="Gap-fill kernel (0=off).")
+            ap.add_argument("--min_call_ms", type=int, default=200,
+                            help="Drop call spans shorter than this.")
+            ap.add_argument("--merge_gap_ms", type=int, default=200,
+                            help="Merge spans separated by less than this.")
+            ap.add_argument("--pad_ms", type=int, default=100,
+                            help="Pad each span on both sides to catch onsets/tails.")
+            args = ap.parse_args()
+
+            df = pd.read_csv(args.input_csv)
+            if args.limit:
+                df = df.head(args.limit)
+            records = df.to_dict("records")
+
+            cfg = dict(
+                audio_col=args.audio_col, sr=args.sr, n_fft=args.n_fft,
+                hop_length=args.hop_length, n_mels=args.n_mels, fmin=args.fmin,
+                fmax=args.fmax, row_factor=args.row_factor, col_factor=args.col_factor,
+                erode=args.erode, dilate=args.dilate,
+                min_call_s=args.min_call_ms / 1000.0,
+                merge_gap_s=args.merge_gap_ms / 1000.0,
+                pad_s=args.pad_ms / 1000.0,
+                min_audio_samples=max(int(args.min_audio_seconds * args.sr), args.n_fft),
+            )
+
+            n_workers = args.workers if args.workers > 0 else (os.cpu_count() or 1)
+            n_workers = min(n_workers, max(1, len(records)))
+            print(f"Detecting calls in {len(records):,} recording(s) with {n_workers} worker(s)...")
+
+            try:
+                from tqdm import tqdm
+                pbar = tqdm(total=len(records), unit="file", desc="detect")
+            except ImportError:
+                pbar = None
+
+            rows = []
+            if n_workers == 1:
+                for rec in records:
+                    rows.append(build_row(rec, cfg))
+                    if pbar:
+                        pbar.update(1)
+            else:
+                with ProcessPoolExecutor(max_workers=n_workers,
+                                         initializer=_init_worker, initargs=(cfg,)) as ex:
+                    for fut in as_completed([ex.submit(_work, r) for r in records]):
+                        rows.append(fut.result())
+                        if pbar:
+                            pbar.update(1)
+            if pbar:
+                pbar.close()
+
+            out = pd.DataFrame(rows, columns=CSV_FIELDS)
+            out.to_csv(args.output_csv, index=False)
+
+            ok = out[out["error"] == ""]
+            n_err = len(out) - len(ok)
+            too_short = int((out["note"] == "too_short").sum())
+            analyzable = ok[ok["note"] != "too_short"]
+            ratios = pd.to_numeric(analyzable["call_ratio"], errors="coerce").dropna()
+            call_secs = pd.to_numeric(analyzable["call_seconds"], errors="coerce").fillna(0).sum()
+            total_secs = pd.to_numeric(analyzable["duration_s"], errors="coerce").fillna(0).sum()
+            n_zero = int((pd.to_numeric(analyzable["n_call_segments"], errors="coerce") == 0).sum())
+
+            print(f"\nWrote {args.output_csv}  ({len(out):,} rows, {n_err} errors, "
+                  f"{too_short:,} too short to analyze)")
+            if len(ratios):
+                qs = np.quantile(ratios, [0.1, 0.25, 0.5, 0.75, 0.9])
+                print("call_ratio (call seconds / duration) across analyzable recordings:")
+                print("  p10={:.3f} p25={:.3f} p50={:.3f} p75={:.3f} p90={:.3f}".format(*qs))
+            print(f"Total call audio kept: {call_secs/3600:.2f}h of {total_secs/3600:.2f}h "
+                  f"({100*call_secs/total_secs:.1f}%)" if total_secs else "")
+            print(f"Analyzable recordings with no detected call: {n_zero:,} "
+                  f"(false negatives -- lower --row_factor/--col_factor to shrink this)")
+            if total_secs:
+                # Rough chunk yield if you slice call audio into 5s windows.
+                print(f"Approx 5s chunks from call audio: {int(call_secs // 5):,} "
+                      f"(vs {int(total_secs // 5):,} from the whole clips)")
+
+
+        if __name__ == "__main__":
+            main()
