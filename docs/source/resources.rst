@@ -14,17 +14,9 @@ Documentation
 Getting Help
 ------------
 
-.. todo::
-
-   Support channels for each resource (help desks, ticket systems, office
-   hours) and how to get help during the tutorial.
+Please raise your hand or place a red post-it note on your laptop to indicate you need help or have a question.
 
 Tutorial Materials
 ------------------
 
-.. todo::
-
-   Link to the tutorial's code repository, datasets, and slides.
-   - GitHub Repo for Tutorial Codebase:
-   - Slides:
-   - Dataset:
+Final slides and other resources will be posted here after the workshop.
