@@ -98,5 +98,3 @@ instance size and current demand on the system.
 
 Once you see a terminal window, you will have successfully launched your first
 Jetstream2 instance!
-
-.. todo:: SSH as an alternative to the web console; verify access.
