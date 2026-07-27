@@ -36,12 +36,11 @@ Federation (OSDF) and that the recording to process is ``ES_01_20230115_060000.o
 
     container_image = osdf:///osg-public/containers/birdclef-pearc26.sif
     executable = run_inference.py
-    arguments =
 
     transfer_input_files = osdf:///osg-public/pearc26-aiml/data/<FILE>, best_efficientnet_b0.pt
 
-    output =
-    error =
+    output = logs/infer_$(Cluster)_$(Process).out
+    error = logs/infer_$(Cluster)_$(Process).err
     log = logs/infer_$(Cluster)_$(Process).log
 
     request_cpus = 1
