@@ -61,27 +61,6 @@ Now that we have our trained model weights and biases (in the form of our
 using for our inference steps — the Open Science Pool (OSPool). There are a few
 ways to go about this.
 
-Sharing our Model via Pelican and the Open Science Data Federation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The `Open Science Data Federation <https://osg-htc.org/services/osdf.html>`_
-(OSDF) is a shared network of data origins and caches that spans the OSG
-infrastructure, and `Pelican <http://pelicanplatform.org/>`_ is the software and
-protocol that moves data across it. Together they let a job name a dataset by a
-federation-wide URL and pull it directly, with nearby caches serving repeat
-requests so popular files don't have to be re-fetched from the origin every time.
-
-This matters here because of *how* the model reaches each job. Rather than
-copying the checkpoint onto the OSPool access point and then shipping it out with
-every job, you can leave the file in place and let each job fetch it from the
-OSDF straight into its sandbox at run time. When a directory under
-``/anvil/projects/`` is exposed through a Pelican *origin*, the checkpoint
-already sitting in your project space becomes addressable by an ``osdf://`` URL
-that any OSPool job can request — no pre-staging on the submit node, and the
-caches absorb the load when hundreds of jobs ask for the same model at once.
-
-.. todo:: DO NOT REMOVE THIS: Need to confirm that Purdue Pelican Origin will expose user data space
-
 Transferring using ``rsync`` or ``scp``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

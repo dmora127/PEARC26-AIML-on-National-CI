@@ -606,4 +606,4 @@ separate ``slurm-<job_id>.err``. We pick the logs and checkpoints back up in
 
 .. note::
 
-    Training the model takes roughly 30–45 minutes. We'll let it run during the break and pick back up on the :doc:`staging-model` page once it finishes.
+    Training the model takes roughly 45-60 minutes. We'll let it run during the break and pick back up on the :doc:`staging-model` page once it finishes.

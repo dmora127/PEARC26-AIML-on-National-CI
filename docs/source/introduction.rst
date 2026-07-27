@@ -18,7 +18,7 @@ By the end of this tutorial, participants will be able to:
 - Move data and artifacts (datasets, models, results) between these systems.
 
 An Introduction to The Three Paradigms
--------------------
+--------------------------------------
    **Cloud computing**: Cloud computing provides on-demand access to computing resources such as virtual machines, GPUs, storage, and software services over the internet. Resources can be provisioned and scaled dynamically, making cloud environments particularly valuable for interactive development, rapid prototyping, burst workloads, and services that require flexibility. Researchers can create highly-customized computing environments to address the needs of different workflows. 
    **High Performance Computing (HPC)**: High Performance Computing combines the power of many compute nodes using high-speed networks and parallel filesystems to solve complex computational problems. HPC is best suited for tightly coupled workloads where many processors must work together on a single problem, such as large-scale simulations and AI model training. The primary goal of HPC is to reduce the time required to complete computationally intensive tasks. 
    **High Throughput Computing (HTC)**: High Throughput Computing focuses on maximizing the total amount of computational work completed over time rather than accelerating a single job. HTC environments are designed to run large numbers of independent or loosely coupled tasks, making them ideal for parameter sweeps, Monte Carlo simulations, image processing, and inference workflows. By distributing many jobs across available resources, HTC enables researchers to efficiently process workloads that may consist of thousands or millions of individual computations.
@@ -53,14 +53,49 @@ On platforms such as the OSPool, jobs are matched to available resources contrib
 The Example Application
 -----------------------
 
-.. todo::
+To keep the three paradigms concrete, every part of this tutorial works on the
+same problem: **bird song classification**. Given a field recording, identify
+which species is singing. It's a genuine research task — passive acoustic
+monitoring is how ecologists survey biodiversity across areas far larger than
+human observers could ever cover — and it has the useful property of exercising
+all three computing paradigms in one honest workflow.
 
-   Describe the dataset and model used throughout the tutorial so each section
-   has a consistent running example.
+The data comes from **BirdCLEF**, an annual competition built on crowd-sourced
+recordings from `xeno-canto <https://xeno-canto.org/>`_ and iNaturalist. The
+training set is a large collection of ``.ogg`` clips organized one directory per
+species, accompanied by a ``train.csv`` of labels and taxonomy. These are *focal*
+recordings — someone pointing a microphone at a single bird — and they are
+gloriously messy: wildly varying equipment and recording distance, background
+species, wind and traffic, and a surprising amount of the recordist narrating the
+species name into the microphone. The audio we ultimately classify is different
+in kind: one-minute **soundscapes** captured by microphones left running in the
+El Silencio preserve, genuinely polyphonic, with several species calling over and
+around each other.
+
+The model is **EfficientNet-B0**, a compact convolutional image classifier. Using
+an *image* model on *audio* is the pivot the whole workflow turns on: we convert
+every recording into a mel-spectrogram — a two-dimensional picture of frequency
+against time — which reduces species identification to ordinary image
+classification. That lets us fine-tune a network already pretrained on ImageNet
+instead of training one from scratch, swapping only its final layer for one sized
+to the number of bird species. EfficientNet-B0 is deliberately small: substantial
+enough to want a GPU for training, cheap enough to run inference on an ordinary
+CPU core.
+
+What makes this a useful teaching example is that its three stages have genuinely
+different computational shapes. Preprocessing is exploratory and iterative — you
+need to look at the data, listen to it, and change your mind. Training is a
+single long-running job that wants a GPU and steady access to a great many files.
+Inference is thousands of small, entirely independent tasks with nothing to say
+to one another. No one system is the best choice for all three, which is exactly
+the point.
 
 Architecture Overview
 ---------------------
 This tutorial follows a simple AI/ML workflow: data exploration, model training, and inference. For each stage, we will leverage the computing environment best suited to the task—cloud computing (Jetstream2) for interactive exploration, HPC (Anvil) for training, and HTC (OSPool) for large-scale inference. Along the way, we will demonstrate how data, models, and other artifacts can be transferred between systems to build an end-to-end AI workflow.
+
+
+.. code-block::
 
     ┌────────────────┐     ┌────────────────┐     ┌────────────────┐
     │  Jetstream2    │ --> │     Anvil      │ --> │    OSPool      │

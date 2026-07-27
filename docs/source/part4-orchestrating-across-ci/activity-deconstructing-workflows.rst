@@ -1,28 +1,31 @@
 Activity: Deconstructing Workflows for the National CI
 ======================================================
 
-.. todo::
+Parts 1–3 handed you a finished answer: preprocess on Jetstream2, train on
+Anvil, run inference on the OSPool. That mapping was chosen for you, and it was
+chosen because each stage had a shape that matched one paradigm — interactive
+and customizable, tightly coupled and GPU-bound, or embarrassingly parallel.
+This activity is where you make that call yourself.
 
-   A collaborative, hands-on activity where participants take a workflow apart
-   and map each stage onto the national CI — choosing resources, transfers, and
-   orchestration deliberately.
+Working in small groups, you'll take a workflow apart of a provided example and break it
+into discrete stages. For each stage, decide where it belongs and be ready to
+defend the choice:
 
-The Exercise
-------------
+- **Which paradigm fits, and why?** Cloud, HPC, or HTC, argued from the shape of
+  the work rather than from familiarity with a particular system.
+- **What has to move between stages?** How much data, in which direction, and by
+  what mechanism.
+- **What depends on what?** Which stages must finish before others can start,
+  and which could just as well run at the same time.
 
-.. todo:: Break into groups; pick a real or provided workflow to deconstruct.
+The seams usually turn out to be the hard part. Choosing a resource for a single
+stage is reasonably straightforward once you know the shape of the work;
+deciding how a large intermediate dataset gets from a cloud VM onto an HPC
+scratch filesystem, or what should happen when one job out of a thousand fails,
+is where real workflows get complicated — and where an orchestration layer earns
+its keep.
 
-Mapping Stages to Resources
----------------------------
-
-.. todo:: For each stage, decide cloud vs. HPC vs. HTC and justify the choice.
-
-Planning Data Movement and Orchestration
-----------------------------------------
-
-.. todo:: Sketch the transfers between stages and how HTCondor ties them together.
-
-Share-Out and Discussion
-------------------------
-
-.. todo:: Groups present their plans; compare trade-offs and surface anti-patterns.
+Groups will share their plans afterward. Expect disagreement: the same stage can
+reasonably land on different resources depending on data size, allocation, and
+deadline, and comparing those trade-offs is more useful than converging on a
+single right answer.
