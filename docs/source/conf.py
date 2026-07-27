@@ -32,7 +32,18 @@ intersphinx_mapping = {
 intersphinx_disabled_domains = ["std"]
 
 templates_path = ["_templates"]
-exclude_patterns = []
+
+# Only the landing page and the setup section are published for now; the
+# tutorial content stays hidden until it is ready for release.
+exclude_patterns = [
+    "introduction.rst",
+    "part1-jetstream2/*",
+    "part2-anvil/*",
+    "part3-ospool/*",
+    "part4-orchestrating-across-ci/*",
+    "wrap-up.rst",
+    "resources.rst",
+]
 
 # -- Options for HTML output -------------------------------------------------
 
