@@ -73,5 +73,4 @@ Contents
    :maxdepth: 1
    :caption: Reference
 
-   wrap-up
    resources
