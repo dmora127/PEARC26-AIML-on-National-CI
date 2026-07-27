@@ -550,6 +550,11 @@ actually trains the model on the GPU.
     #SBATCH --job-name birdclef-train
     #SBATCH -t 01:30:00  # 1 hour 30 minutes
 
+    module reset
+    module load conda
+
+    conda activate pearc26-tutorial
+
     python3 train.py --metadata_csv metadata_min5_recordings.csv --mel_root /anvil/projects/x-cis260991/melspecs/ --out_dir outputs/ --epochs 5 --batch_size 32 --lr 1e-4 --num_workers 8 --arch efficientnet_b5
 
 The directives map directly onto what the scheduler reserves:

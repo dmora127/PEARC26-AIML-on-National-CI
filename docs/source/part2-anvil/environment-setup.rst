@@ -15,3 +15,38 @@ motivation for going slowly here. From :doc:`training-job` onward everything
 runs unattended through Slurm, where a missing package doesn't announce itself
 until your job has cleared the queue and started — so it's worth spending a few
 interactive minutes now to avoid losing an hour to a one-line traceback later.
+
+
+Load Anaconda (conda-forge) package manager:
+
+.. code-block::
+
+    module load conda
+
+
+Our dependencies:
+
+- torch
+- torchvision
+- pandas
+- Pillow
+- scikit-learn
+- tqdm
+
+
+Creating the virtual environment (just once):
+
+.. code-block::
+
+   conda create -n pearc26-tutorial python=3.14
+
+
+Installing our dependencies (just once)
+
+.. code-block::
+
+   conda activate pearc26-tutorial
+
+   export PYTHONNOUSERSITE=1
+   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu132
+   pip install pandas pandas pillow scikit-learn tqdm
