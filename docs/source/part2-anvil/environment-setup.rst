@@ -41,7 +41,7 @@ Creating the virtual environment (just once):
    conda create -n pearc26-tutorial python=3.14
 
 
-Installing our dependencies (just once)
+Installing our dependencies (just once):
 
 .. code-block::
 
