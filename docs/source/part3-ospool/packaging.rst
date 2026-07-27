@@ -1,16 +1,25 @@
 Packaging the Model & Code
 ==========================
 
-.. todo::
-
-   Make each job self-contained: bundle the model, inference script, and
-   dependencies (container or portable environment) so jobs run anywhere on
-   the pool. Plan how inputs and outputs are transferred.
+A job on the OSPool lands on a machine that knows nothing about your work — not
+your inference script, not your trained model, not even that PyTorch exists.
+Everything it needs has to travel with it. Most of that weight is software, so
+the central task of this page is **building a container**: one portable image
+holding Python, PyTorch, and the rest of the inference dependencies, pinned to
+the versions you actually tested, that every job carries along and runs inside.
+We'll describe that environment in an Apptainer definition file, build it into a
+``.sif`` image, and stage it where jobs can pull it — then turn to the other half
+of making a job self-contained, which is getting the model checkpoint and each
+job's slice of audio out to the execute node and the predictions back again.
 
 The Inference Script
 --------------------
 
-.. todo:: A script that loads the model and runs inference on a shard of inputs.
+You can download a copy of the inference script from the BirdCLEF OSDF ``osg-public`` namespace:
+
+.. code-block:: shell
+
+    pelican object get osdf:///osg-public/pearc26-aiml/utils/run_inference.py
 
 Dependencies & Containers
 -------------------------
