@@ -33,6 +33,7 @@ assumes the container and model checkpoint are already staged in the Open Scienc
 Federation (OSDF) and that the recording to process is ``ES_01_20230115_060000.ogg``.
 
 .. code-block:: bash
+
     container_image = osdf:///osg-public/containers/birdclef-pearc26.sif
     executable = run_inference.py
     arguments =
