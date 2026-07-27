@@ -43,7 +43,7 @@ These options include different GPU architectures, CPU and RAM allocations, disk
 
 Connecting to Your VM
 ---------------------
-After creating your instance, you will be redirected back to the resource utalization overview page. In the "Volumes" pane, you will notice your instance is in the "Building" state - this means your virtual machine is being customized. Your instance will then show "Running Setup", and finally "Ready". This process may take several minutes or more depending on ______. 
+After creating your instance, you will be redirected back to the resource utalization overview page. In the "Volumes" pane, you will notice your instance is in the "Building" state - this means your virtual machine is being customized. Your instance will then show "Running Setup", and finally "Ready". This process may take several minuteS.
 
 (1) Once your instance is "Ready", click on its name. 
 (2) You will be redirected to a new page. In the "Connect to" dropdown box, select "Console". 
