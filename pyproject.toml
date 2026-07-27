@@ -1,8 +1,12 @@
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
-
 [project]
-name = "lumache"
+name = "pearc26-aiml-on-national-ci"
+version = "0.1.0"
+description = "Companion guide for the PEARC26 tutorial 'AI/ML Workflows on the National CI'."
 authors = [{name = "Daniel Morales", email = "damorales4@wisc.edu"}, {name = "Lena Duplechin Seymour", email = "l.duplechinseymour@tacc.utexas.edu"}, {name = "Suzanna Gardener", email = "gardn161@purdue.edu"}, {name = "Geoffrey Lentner", email = "glentner@purdue.edu"}, {name = "Rachel Lombardi", email = "rlombardi6@gatech.edu"}]
-dynamic = ["version", "description"]
+requires-python = ">=3.13"
+
+[tool.uv]
+# Documentation-only repository: there is no importable Python module to build,
+# so treat this as a virtual (non-package) project. uv will manage the
+# environment/dependencies without invoking a build backend.
+package = false
